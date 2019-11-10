@@ -11,6 +11,10 @@ module.exports = (app, passport) => {
     app.get('/api', (req, res) => {
         res.render('api.ejs'); // load the index.ejs file
     });
+    
+    app.get('/admin', (req, res) => {
+        res.render('TEMP_ADMIN.ejs'); // load the index.ejs file
+    });
 
     // =====================================
     // LOGIN ===============================
@@ -60,7 +64,7 @@ module.exports = (app, passport) => {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
     app.get('/profile', isLoggedIn, ({ user }, res) => {
-        res.render('profile.ejs', {
+        res.render('admin/profile.ejs', {
             user, // get the user out of session and pass to template
         });
     });
