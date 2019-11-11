@@ -1,4 +1,10 @@
 // app/routes.js
+
+const mysql = require('mysql');
+const dbconfig = require('../config/database');
+const connection = mysql.createConnection(dbconfig.connection);
+connection.query(`USE ${dbconfig.database}`);
+
 module.exports = (app, passport) => {
 
     // =====================================
@@ -10,6 +16,22 @@ module.exports = (app, passport) => {
     
     app.get('/api', (req, res) => {
         res.render('api.ejs'); // load the index.ejs file
+        
+    });
+    
+    app.get('/mysql', (req, res) => {
+        
+        connection.query("SELECT * from cosmetics", function(err, result, fields){
+            
+            if(err){
+                throw err;
+            }
+            
+            console.log(result);
+            var result2 = JSON.stringify(result);
+            res.render('test/mysql_users.ejs', {result, result2}); // load the index.ejs file
+            
+        });
     });
     
     app.get('/admin', (req, res) => {
