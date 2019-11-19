@@ -14,26 +14,73 @@ module.exports = (app, passport) => {
         res.render('index.ejs'); // load the index.ejs file
     });
     
+    //MYSQL INJECTION FIX: https://www.veracode.com/blog/secure-development/how-prevent-sql-injection-nodejs
+
+    //API ==============================================================================================
     app.get('/api', (req, res) => {
         res.render('api.ejs'); // load the index.ejs file
-        
+
     });
-    
-    app.get('/mysql', (req, res) => {
-        
-        connection.query("SELECT * from cosmetics", function(err, result, fields){
-            
-            if(err){
+
+    app.post('/api/mapUUID', (req, res) => {
+        //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
+        var uuid = req.body.uuid;
+        var hwid = req.body.hwid;
+        var username = req.body.username;
+
+        connection.query("REPLACE INTO usermap(uuid, hwid, username) VALUES('" + uuid + "', '" + hwid + "', '" + username + "')", function (err, result, fields) {
+
+            if (err) {
                 throw err;
             }
-            
+
+            console.log(result);
+            res.send(result);
+
+        });
+
+        console.log(uuid + " " + hwid + " " + username);
+    });
+
+    app.get('/api/isBanned', (req, res) => {
+        //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
+        var hwid = req.body.hwid;
+
+        //SELECT * FROM `hwidban` WHERE hwid = 'testhwid'
+        connection.query("SELECT * FROM `hwidban` WHERE hwid = '" + hwid + "'", function (err, result, fields) {
+
+            if (err) {
+                throw err;
+            }
+
+            console.log(result);
+            res.send(result);
+
+        });
+
+        //res.send("HWID: " + hwid);
+    });
+
+    //end api =============================================================================================
+
+    app.get('/mysql', (req, res) => {
+
+        connection.query("SELECT * from cosmetics", function (err, result, fields) {
+
+            if (err) {
+                throw err;
+            }
+
             console.log(result);
             var result2 = JSON.stringify(result);
-            res.render('test/mysql_users.ejs', {result, result2}); // load the index.ejs file
-            
+            res.render('test/mysql_users.ejs', {
+                result,
+                result2
+            }); // load the index.ejs file
+
         });
     });
-    
+
     app.get('/admin', (req, res) => {
         res.render('TEMP_ADMIN.ejs'); // load the index.ejs file
     });
@@ -45,7 +92,9 @@ module.exports = (app, passport) => {
     app.get('/login', (req, res) => {
 
         // render the page and pass in any flash data if it exists
-        res.render('login.ejs', { message: req.flash('loginMessage') });
+        res.render('login.ejs', {
+            message: req.flash('loginMessage')
+        });
     });
 
     // process the login form
@@ -53,7 +102,10 @@ module.exports = (app, passport) => {
         successRedirect: '/profile', // redirect to the secure profile section
         failureRedirect: '/login', // redirect back to the signup page if there is an error
         failureFlash: true, // allow flash messages
-    }), ({ body, session }, res) => {
+    }), ({
+        body,
+        session
+    }, res) => {
         console.log('hello');
 
         if (body.remember) {
@@ -70,7 +122,9 @@ module.exports = (app, passport) => {
     // show the signup form
     app.get('/signup', (req, res) => {
         // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', { message: req.flash('signupMessage') });
+        res.render('signup.ejs', {
+            message: req.flash('signupMessage')
+        });
     });
 
     // process the signup form
@@ -85,7 +139,9 @@ module.exports = (app, passport) => {
     // =====================================
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
-    app.get('/profile', isLoggedIn, ({ user }, res) => {
+    app.get('/profile', isLoggedIn, ({
+        user
+    }, res) => {
         res.render('admin/profile.ejs', {
             user, // get the user out of session and pass to template
         });
