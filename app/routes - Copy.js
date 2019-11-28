@@ -8,10 +8,6 @@ connection.query(`USE ${dbconfig.database}`);
 module.exports = (app, passport) => {
 
     require('./apitest.js')(app, passport, connection);
-    require('./routes/api/mapUUID.js')(app, passport, connection);
-    require('./routes/api/isBanned.js')(app, passport, connection);
-    require('./routes/api/getUsername.js')(app, passport, connection);
-    require('./routes/api.js')(app, passport, connection);
     
     // =====================================
     // HOME PAGE (with login links) ========
@@ -22,14 +18,101 @@ module.exports = (app, passport) => {
     
     //MYSQL INJECTION FIX: https://www.veracode.com/blog/secure-development/how-prevent-sql-injection-nodejs
 
+    //API ==============================================================================================
+    app.get('/api', (req, res) => {
+        res.render('api.ejs'); // load the index.ejs file
 
-    
+    });
 
+    app.post('/api/mapUUID', (req, res) => {
+        //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
+        var uuid = req.body.uuid;
+        var hwid = req.body.hwid;
+        var username = req.body.username;
+
+        connection.query("REPLACE INTO usermap(uuid, hwid, username) VALUES('" + uuid + "', '" + hwid + "', '" + username + "')", function (err, result, fields) {
+
+            if (err) {
+                throw err;
+            }
+
+            console.log(uuid + " - " + hwid + " - " + username);
+            res.send(result);
+
+        });
+
+        console.log(uuid + " " + hwid + " " + username);
+    });
+
+    app.get('/api/isBanned', (req, res) => {
+        //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
+        var hwid = req.query.hwid;
+
+        //SELECT * FROM `hwidban` WHERE hwid = 'testhwid'
+        connection.query("SELECT * FROM `hwidban` WHERE hwid = '" + hwid + "'", function (err, result, fields) {
+
+            if (err) {
+                throw err;
+            }
+            
+            var toReturn = result[0];
+            //If we don't exist in the database, pretend we do. Just incase.
+            if(toReturn == undefined) {
+                toReturn = JSON.parse('{"hwid": "' + hwid + '", "isBanned": 0}');
+            }
+            
+            console.log(toReturn);
+            res.send(toReturn);
+
+        });
+
+        //res.send("HWID: " + hwid);
+    });
     
-    
-    
+    app.get('/api/getUsername', (req, res) => {
+        //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
+        var uuid = req.query.uuid;
+
+        //SELECT * FROM `hwidban` WHERE hwid = 'testhwid'
+        connection.query("SELECT * FROM `usermap` WHERE uuid = '" + uuid + "'", function (err, result, fields) {
+
+            if (err) {
+                throw err;
+            }
+            
+            var toReturn = result[0];
+            //If we don't exist in the database, pretend we do. Just incase.
+            if(toReturn == undefined) {
+                toReturn = "undefined";
+            }
+            
+            console.log(toReturn);
+            res.send(toReturn);
+
+        });
+
+        //res.send("HWID: " + hwid);
+    });
 
     //end api =============================================================================================
+
+    app.get('/mysql', (req, res) => {
+
+        connection.query("SELECT * from cosmetics", function (err, result, fields) {
+
+            if (err) {
+                throw err;
+            }
+
+            console.log(result);
+            var result2 = JSON.stringify(result);
+            res.render('test/mysql_users.ejs', {
+                result,
+                result2
+            }); // load the index.ejs file
+
+        });
+    });
 
     app.get('/admin', (req, res) => {
         res.render('TEMP_ADMIN.ejs'); // load the index.ejs file
