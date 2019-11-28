@@ -7,7 +7,6 @@ connection.query(`USE ${dbconfig.database}`);
 
 module.exports = (app, passport) => {
 
-    require('./apitest.js')(app, passport, connection);
     require('./routes/api/mapUUID.js')(app, passport, connection);
     require('./routes/api/isBanned.js')(app, passport, connection);
     require('./routes/api/getUsername.js')(app, passport, connection);

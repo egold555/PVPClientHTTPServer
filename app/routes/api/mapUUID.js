@@ -9,15 +9,15 @@ module.exports = (app, passport, database) => {
         database.query("REPLACE INTO usermap(uuid, hwid, username) VALUES('" + uuid + "', '" + hwid + "', '" + username + "')", function (err, result, fields) {
 
             if (err) {
-                throw err;
+                res.send("500 Error. See console.");
+                console.log(err);
+                return;
             }
 
             console.log(uuid + " - " + hwid + " - " + username);
-            res.send(result);
+            res.send("200 OK");
 
         });
-
-        console.log(uuid + " " + hwid + " " + username);
     });
     
 }

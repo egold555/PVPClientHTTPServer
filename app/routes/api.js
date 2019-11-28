@@ -20,7 +20,7 @@ module.exports = (app, passport, database) => {
 
 
     app.get('/api', (req, res) => {
-        fs.readFile(__dirname + '/api.md', 'utf-8', function (err, data) {
+        fs.readFile(__dirname + '../../../documentation/api.md', 'utf-8', function (err, data) {
             if (err) {
                 console.log(err);
                 res.send(err);
