@@ -7,6 +7,8 @@ connection.query(`USE ${dbconfig.database}`);
 
 module.exports = (app, passport) => {
 
+    
+    
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -34,7 +36,7 @@ module.exports = (app, passport) => {
                 throw err;
             }
 
-            console.log(result);
+            console.log(uuid + " - " + hwid + " - " + username);
             res.send(result);
 
         });
@@ -44,7 +46,7 @@ module.exports = (app, passport) => {
 
     app.get('/api/isBanned', (req, res) => {
         //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
-        var hwid = req.body.hwid;
+        var hwid = req.query.hwid;
 
         //SELECT * FROM `hwidban` WHERE hwid = 'testhwid'
         connection.query("SELECT * FROM `hwidban` WHERE hwid = '" + hwid + "'", function (err, result, fields) {
@@ -52,9 +54,40 @@ module.exports = (app, passport) => {
             if (err) {
                 throw err;
             }
+            
+            var toReturn = result[0];
+            //If we don't exist in the database, pretend we do. Just incase.
+            if(toReturn == undefined) {
+                toReturn = JSON.parse('{"hwid": "' + hwid + '", "isBanned": 0}');
+            }
+            
+            console.log(toReturn);
+            res.send(toReturn);
 
-            console.log(result);
-            res.send(result);
+        });
+
+        //res.send("HWID: " + hwid);
+    });
+    
+    app.get('/api/getUsername', (req, res) => {
+        //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
+        var uuid = req.query.uuid;
+
+        //SELECT * FROM `hwidban` WHERE hwid = 'testhwid'
+        connection.query("SELECT * FROM `usermap` WHERE uuid = '" + uuid + "'", function (err, result, fields) {
+
+            if (err) {
+                throw err;
+            }
+            
+            var toReturn = result[0];
+            //If we don't exist in the database, pretend we do. Just incase.
+            if(toReturn == undefined) {
+                toReturn = "undefined";
+            }
+            
+            console.log(toReturn);
+            res.send(toReturn);
 
         });
 
