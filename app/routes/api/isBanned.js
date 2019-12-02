@@ -1,3 +1,5 @@
+var responseUtils = require('../../.././helpers/response_utilities.js');
+
 module.exports = (app, passport, database) => {
     
     app.get('/api/isBanned', (req, res) => {
@@ -15,14 +17,14 @@ module.exports = (app, passport, database) => {
             //If we don't exist in the database, pretend we do. Just incase.
             if(toReturn == undefined) {
                 toReturn = JSON.parse('{"hwid": "' + hwid + '", "isBanned": 0}');
+                responseUtils.notFound(res, toReturn);
+                return;
             }
-            
-            console.log(toReturn);
-            res.send(toReturn);
+
+            responseUtils.success(res, toReturn);
 
         });
 
-        //res.send("HWID: " + hwid);
     });
     
 }

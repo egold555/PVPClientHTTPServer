@@ -1,7 +1,9 @@
+var responseUtils = require('../../.././helpers/response_utilities.js');
+
 module.exports = (app, passport, database) => {
     
     app.get('/apitest', (req, res) => {
-        res.send("Holy shirtballs it worked");
+        responseUtils.success("Holy shirtballs it worked");
     });
     
 }

@@ -1,3 +1,5 @@
+var responseUtils = require('../../.././helpers/response_utilities.js');
+
 module.exports = (app, passport, database) => {
     
     app.post('/api/mapUUID', (req, res) => {
@@ -9,13 +11,14 @@ module.exports = (app, passport, database) => {
         database.query("REPLACE INTO usermap(uuid, hwid, username) VALUES('" + uuid + "', '" + hwid + "', '" + username + "')", function (err, result, fields) {
 
             if (err) {
-                res.send("500 Error. See console.");
+                
+                responseUtils.error("500 Error. See console.");
                 console.log(err);
                 return;
             }
 
             console.log(uuid + " - " + hwid + " - " + username);
-            res.send("200 OK");
+            responseUtils.success(res, "200 OK");
 
         });
     });

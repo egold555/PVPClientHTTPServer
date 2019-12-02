@@ -2,12 +2,12 @@ var responseUtils = require('../../.././helpers/response_utilities.js');
 
 module.exports = (app, passport, database) => {
     
-    app.get('/api/getUsername', (req, res) => {
+    app.get('/api/isWhitelisted', (req, res) => {
         //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
-        var uuid = req.query.uuid;
+        var hwid = req.query.hwid;
 
         //SELECT * FROM `hwidban` WHERE hwid = 'testhwid'
-        database.query("SELECT * FROM `usermap` WHERE uuid = '" + uuid + "'", function (err, result, fields) {
+        database.query("SELECT * FROM `hwidwhitelist` WHERE hwid = '" + hwid + "'", function (err, result, fields) {
 
             if (err) {
                 throw err;
@@ -16,15 +16,11 @@ module.exports = (app, passport, database) => {
             var toReturn = result[0];
             //If we don't exist in the database, pretend we do. Just incase.
             if(toReturn == undefined) {
-                responseUtils.notFound(res, "User not found!");
+                toReturn = JSON.parse('{"hwid": "' + hwid + '", "isWhitelisted": 0}');
+                responseUtils.notFound(res, toReturn);
                 return;
             }
-            
-            //delete the fields we don't need
-            delete toReturn.hwid;
-            delete toReturn.updated_time;
-            
-            console.log(toReturn);
+
             responseUtils.success(res, toReturn);
 
         });
