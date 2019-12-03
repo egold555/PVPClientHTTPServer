@@ -1,26 +1,46 @@
+/*
+
+Given a HWID, returns if they are whitelisted or not.
+
+Example json returned:
+
+{
+  "hwid": "hwid-passed-in",
+  "isWhitelisted": 1
+}
+
+*/
+
 var responseUtils = require('../../.././helpers/response_utilities.js');
 
 module.exports = (app, passport, database) => {
     
+    //GET
     app.get('/api/isWhitelisted', (req, res) => {
-        //INSERT INTO `clientusers` (`id`, `uuid`, `hwid`, `username`, `updated_time`) VALUES (NULL, 'uuid', 'hwid', 'username', NOW());
+        
+        //?hwid=
         var hwid = req.query.hwid;
 
-        //SELECT * FROM `hwidban` WHERE hwid = 'testhwid'
+        //Query the database for the hwid
         database.query("SELECT * FROM `hwidwhitelist` WHERE hwid = '" + hwid + "'", function (err, result, fields) {
-
+            
+            //Not sure when a error would occurr
+            //Best to echo it as JSON
+            //TODO: Fix server crash here
             if (err) {
                 throw err;
             }
             
             var toReturn = result[0];
-            //If we don't exist in the database, pretend we do. Just incase.
+            //If we don't exist in the database, pretend we do. Just incase. Rules out the case of brute forcing hwid's
             if(toReturn == undefined) {
                 toReturn = JSON.parse('{"hwid": "' + hwid + '", "isWhitelisted": 0}');
-                responseUtils.notFound(res, toReturn);
+                //responseUtils.notFound(res, toReturn); //Can be used in a brute force attack potentally
+                responseUtils.success(res, toReturn);
                 return;
             }
-
+            
+            //Respond with 200 suceess, and out json object
             responseUtils.success(res, toReturn);
 
         });
