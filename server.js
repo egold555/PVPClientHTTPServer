@@ -1,7 +1,3 @@
-//server.js
-
-//set up ======================================================================
-//get all the tools we need
 const config = require('./config/config');
 const express = require('express');
 const session = require('express-session');
@@ -34,16 +30,15 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
 })); //session secret
+
 app.use(passport.initialize());
 app.use(passport.session()); //persistent login sessions
 app.use(flash()); //use connect-flash for flash messages stored in session
 
 app.use('/static', express.static('views/static'));
 
-//routes ======================================================================
 require('./app/routes.js')(app, passport); //load our routes and pass in our app and fully configured passport
 
-//launch ======================================================================
 app.listen(port);
 console.log("Running Eric's Client Communication Server v" + config.version);
 console.log(`The magic happens on port ${port}`);
