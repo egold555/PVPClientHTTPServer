@@ -5,6 +5,7 @@
 | /admin                  | POST     | Username Pass          | Page           | Admin login page                                       |
 | /admin/logout           | POST     | none                   | /admin         | Logs the user out                                      |
 | /admin/login            | POST     | none                   | /admin/profile | Logs the user in                                       |
+| /admin/signup           | GET/POST | none                   | /admin/profile | Signs the user up                                      |
 
 # Not Implemented
 ### TODO

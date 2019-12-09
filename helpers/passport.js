@@ -1,24 +1,17 @@
-// config/passport.js
-
 // load all the things we need
 const LocalStrategy = require('passport-local').Strategy;
 
 // load up the user model
 const mysql = require('mysql');
 const bcrypt = require('bcrypt-nodejs');
-const dbconfig = require('./database');
+const dbconfig = require('.././config/database');
 const connection = mysql.createConnection(dbconfig.connection);
 
 connection.query(`USE ${dbconfig.database}`);
 // expose this function to our app using module.exports
 module.exports = (passport) => {
 
-    // =========================================================================
-    // passport session setup ==================================================
-    // =========================================================================
-    // required for persistent login sessions
-    // passport needs ability to serialize and unserialize users out of session
-
+    //passport setup stuff
     // used to serialize the user for the session
     passport.serializeUser(({ id }, done) => {
         done(null, id);
@@ -31,12 +24,7 @@ module.exports = (passport) => {
         });
     });
 
-    // =========================================================================
-    // LOCAL SIGNUP ============================================================
-    // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
-
+    //local signup
     passport.use(
         'local-signup',
         new LocalStrategy({
@@ -70,12 +58,7 @@ module.exports = (passport) => {
         })
     );
 
-    // =========================================================================
-    // LOCAL LOGIN =============================================================
-    // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
-
+    //local login
     passport.use(
         'local-login',
         new LocalStrategy({
@@ -86,6 +69,8 @@ module.exports = (passport) => {
         }, (req, username, password, done) => { // callback with email and password from our form
             connection.query('SELECT * FROM users WHERE username = ?', [username], (err, rows) => {
                 if (err) return done(err);
+                
+                //TODO: BRUTE FORCE ATTACK WARNING. SHOULD BE SAME ERROR MESSAGE 'USER NOT FOUND' 'WRONG PASSWORD'
                 if (!rows.length) {
                     return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
                 }

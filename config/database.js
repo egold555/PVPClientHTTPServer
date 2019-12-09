@@ -5,6 +5,5 @@ module.exports = {
         user: 'root',
         password: '',
     },
-    database: 'passportjs1',
-    users_table: 'users',
+    database: 'clientname'
 };
