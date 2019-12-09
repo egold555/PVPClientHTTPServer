@@ -1,1 +1,1 @@
-idk yet, change me
+NodeJS server for capes/cosmetics/ and other client stuff and things. I need a better readme I know.
