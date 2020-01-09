@@ -26,7 +26,7 @@ app.set('view engine', 'ejs'); //set up ejs for templating
 
 //required for passport
 app.use(session({
-    secret: 'this_is_a_super_secret_session_sescret_._you_should_change_this',
+    secret: config.client_secret,
     resave: true,
     saveUninitialized: true,
 })); //session secret
