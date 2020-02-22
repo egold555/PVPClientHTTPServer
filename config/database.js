@@ -1,9 +1,9 @@
 // config/database.js
 module.exports = {
     connection: {
-        host: 'localhost',
-        user: 'root',
-        password: '',
+        host: 'db4free.net',
+        user: 'zentclient',
+        password: 'zentclientzentclientzentclient',
     },
-    database: 'clientname'
+    database: 'zentclient'
 };
