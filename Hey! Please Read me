@@ -1,0 +1,13 @@
+Hi!
+
+You dont have GitHub issues enabled for this repo, but you pushed your database credentials to your public repo. 
+
+ANYONE can now access your database. 
+
+This was the best way I could think of about trying to contact you.
+
+I would recomend making this repo private or changing the credentials and not pushing them.
+
+The file I am talking about: https://github.com/zentpvp/PVPClientHTTPServer/blob/releases/config/database.js
+
+-- Eric Golde (egold555)
