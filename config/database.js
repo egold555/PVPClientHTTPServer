@@ -5,5 +5,5 @@ module.exports = {
         user: 'daddyst0_andrew',
         password: 'W0lfieW3stie',
     },
-    database: 'devclient'
+    database: 'daddyst0_clientdata'
 };
