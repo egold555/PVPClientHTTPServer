@@ -1,9 +1,9 @@
 // config/database.js replace theese fields with your own!
 module.exports = {
     connection: {
-        host: 'host ',
-        user: 'user',
-        password: 'pass',
+        host: '108.167.140.159',
+        user: 'daddyst0_admin2',
+        password: 'lB^[IGAY=3~H',
     },
-    database: 'database'
+    database: 'daddyst0_clientdata'
 };
