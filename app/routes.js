@@ -8,7 +8,7 @@ It also connects to the database, and handels logging into the admin page curren
 
 const mysql = require('mysql');
 const dbconfig = require('../config/database');
-const connection = mysql.createConnection(dbconfig.connection);
+const connection = mysql.createPool(dbconfig.connection);
 connection.query(`USE ${dbconfig.database}`);
 
 module.exports = (app, passport) => {
