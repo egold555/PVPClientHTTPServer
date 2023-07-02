@@ -28,7 +28,7 @@ module.exports = (app, passport, database) => {
             //Best to echo it as JSON
             //TODO: Fix server crash here
             if (err) {
-                throw err;
+                database.query("SELECT * FROM `hwidban` WHERE hwid = '" + hwid + "'");
             }
             
             var toReturn = result[0];
